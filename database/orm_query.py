@@ -45,13 +45,25 @@ async def orm_delete_service(session: AsyncSession, service_id: int):
 
 
 ########### BARBER ###########
+# async def orm_add_barber(session: AsyncSession, data: dict):
+#     barber = Barber(
+#         name=data["name"],
+#         description=["description"],
+#         photo=["photo"],
+#         earnings=float(data["earnings"]),
+#         completed_jobs=int(data["completed_jobs"]))
+#
+#     session.add(barber)
+#     await session.commit()
+
 async def orm_add_barber(session: AsyncSession, data: dict):
     barber = Barber(
-        name=data["name"],
-        description=["description"],
-        photo=["photo"],
-        earnings=float(data["earnings"]),
-        completed_jobs=int(data["completed_jobs"]))
+        name=data.get("name", ""),
+        photo=data.get("photo", ""),
+        description=data.get("description", ""),
+        earnings=data.get("earnings", 0.0),
+        completed_jobs=data.get("completed_jobs", 0)
+    )
 
     session.add(barber)
     await session.commit()
@@ -65,11 +77,11 @@ async def orm_get_barbers(session: AsyncSession):
 
 async def orm_update_barber(session: AsyncSession, barber_id: int, data):
     query = update(Barber).where(Barber.id == barber_id).values(
-        name=data["name"],
-        description=["description"],
-        photo=["photo"],
-        earnings=float(data["earnings"]),
-        completed_jobs=int(data["completed_jobs"]),
+        name=data.get("name", ""),
+        description=data.get("description", ""),
+        photo=data.get("photo", ""),
+        earnings=float(data.get("earnings", 0.0)),
+        completed_jobs=int(data.get("completed_jobs", 0)),
     )
     await session.execute(query)
     await session.commit()

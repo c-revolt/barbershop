@@ -22,6 +22,7 @@ class Barber(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(15), nullable=False)
+    description: Mapped[str] = mapped_column(String(150), nullable=False)
     photo: Mapped[str] = mapped_column(String(150))
     earnings: Mapped[float] = mapped_column(Numeric, default=0.0)
     completed_jobs: Mapped[int] = mapped_column(Integer, default=0)
