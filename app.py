@@ -20,7 +20,7 @@ from common.cmds_list import private
 bot = Bot(
     token=os.getenv('BOT_TOKEN'),
     default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-bot.my_admins_list = []
+bot.my_admins_list = [5720448139,]
 
 dp = Dispatcher()
 
@@ -30,7 +30,7 @@ dp.include_router(admin_private_router)
 
 
 async def on_startup(bot):
-    # await drop_db()
+    await drop_db()
 
     await create_db()
 

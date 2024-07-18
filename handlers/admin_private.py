@@ -11,6 +11,10 @@ from filters.chat_types import ChatTypeFilter, IsAdmin
 from keyboards.reply import admin_kb
 from keyboards.inline import get_callback_btns
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
 admin_private_router = Router()
 admin_private_router.message.filter(ChatTypeFilter(["private"]), IsAdmin())
 
@@ -285,6 +289,16 @@ async def add_photo(message: types.Message, state: FSMContext, session: AsyncSes
     else:
         await state.update_data(photo=message.photo[-1].file_id)
     data = await state.get_data()
+
+    data['description'] = data.get('description', '')
+    # logging.debug(f'DESCRIPTION {data["description"]}')
+
+    data['photo'] = data.get('photo', '')
+    # logging.debug(f'PHOTO {data["photo"]}')
+
+    data['earnings'] = data.get('earnings', 0.0)
+    data['completed_jobs'] = data.get('completed_jobs', 0)
+
     try:
         if AddBarber.barber_for_change:
             await orm_update_barber(session, AddBarber.barber_for_change.id, data)
