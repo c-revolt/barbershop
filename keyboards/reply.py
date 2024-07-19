@@ -4,23 +4,19 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 main_menu_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="🎟 Абонементы"),
+            KeyboardButton(text="💈 Услуги 💈"),
+            KeyboardButton(text="✂️ Барберы ✂️")
         ],
         [
-            KeyboardButton(text="💈 Услуги"),
-            KeyboardButton(text="✂️ Барберы")
+            KeyboardButton(text="🪪 Профиль")
         ],
         [
-            KeyboardButton(text="🪪 Личный кабинет"),
-        ],
-[
-            KeyboardButton(text="📲 Контакты"),
-            KeyboardButton(text="🔒 Privacy"),
+            KeyboardButton(text="📲 Контакты")
         ],
         [
-            KeyboardButton(text="🌟 Отзывы"),
+            KeyboardButton(text="🔒 Privacy")
         ],
-[
+        [
             KeyboardButton(text="Разработчик(только в демо боте)"),
         ],
 
@@ -29,11 +25,30 @@ main_menu_kb = ReplyKeyboardMarkup(
     input_field_placeholder='Что Вас интересует?'
 )
 
+profile_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='📗 Ближайшая запись')
+        ],
+        [
+            KeyboardButton(text='📘 История записей')
+        ],
+        [
+            KeyboardButton(text='🖊 Изменить данные')
+        ],
+        [
+            KeyboardButton(text='⬅️ Назад')
+        ]
+    ],
+    resize_keyboard=True,
+    input_field_placeholder='Что Вас интересует?'
+)
+
 admin_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="🎟 Абонементы"),
             KeyboardButton(text="Услуги"),
+            KeyboardButton(text="Барберы")
         ],
         [
 
@@ -50,7 +65,7 @@ admin_kb = ReplyKeyboardMarkup(
             KeyboardButton(text="📊 Статистика")
         ],
         [
-            KeyboardButton(text="🌟 Отзывы"),
+            KeyboardButton(text="⬅️ Назад"),
         ],
 
     ],

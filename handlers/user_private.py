@@ -1,5 +1,6 @@
 from aiogram import F, Router, types
 from aiogram.filters import CommandStart, Command, or_f
+from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.orm_query import orm_get_services, orm_get_barbers
@@ -19,19 +20,37 @@ async def start_cmd(message: types.Message):
     )
 
 
-@user_private_router.message(F.text.lower() == "💈 услуги")
+@user_private_router.message(F.text.lower() == "💈 услуги 💈")
 @user_private_router.message(Command("services"))
 async def get_services(message: types.Message, session: AsyncSession):
-    for service in await orm_get_services(session):
-        await message.answer(f"💈 {round(service.price, 0)} ₽ | {service.name} | {service.time} 💈",
-                             reply_markup=get_menu_callback_btns(btns={f"Выбрать": f" select_{service.id} "}))
+    services = await orm_get_services(session)
+    if (services):
+        for service in services:
+            await message.answer(f"💵 <strong>{round(service.price, 0)} ₽</strong>  |  🕘 {service.time}\n"
+                                 f"💈 {service.name} 💈\n\n"
+                                 f"➡️ Тут будет небольшое красивое описание услуги, "
+                                 f"которое рассказывает какие будут использоваться инструменты и прочее.\n\n",
+                                 reply_markup=get_menu_callback_btns(
+                                     btns={f"Выбрать": f"select_services_{service.id}"}))
+    else:
+        await message.answer(text='К сожалению, услуг пока нет. обратитесь к администратору!')
 
 
-@user_private_router.message(F.text.lower() == "✂️ Барберы")
+@user_private_router.message(F.text.lower() == "✂️ барберы ✂️")
 @user_private_router.message(Command("barbers"))
 async def get_barbers(message: types.Message, session: AsyncSession):
-    for barber in await orm_get_barbers(session):
-        await message.answer_photo(barber.photo,
-                                   caption=f"<stronng>{barber.name}</strong> \n"
-                                           f"{barber.description}",
-                                   reply_markup=get_menu_callback_btns(btns={f"Выбрать": f" select_{barber.id} "}))
+    barbers = await orm_get_barbers(session)
+    if (barbers):
+        for barber in barbers:
+            await message.answer_photo(barber.photo,
+                                       caption=f"<strong>{barber.name}</strong> \n"
+                                               f"{barber.description}",
+                                       reply_markup=get_menu_callback_btns(
+                                           btns={f"Выбрать": f"select_barbers_{barber.id}"}))
+    else:
+        await message.answer(text='Список барберов пуст!')
+
+
+@user_private_router.message(F.text == "⬅️ Назад")
+async def back_to_main_menu(message: types.Message):
+    await message.answer(text="Вы вернулись в главное меню.", reply_markup=main_menu_kb)

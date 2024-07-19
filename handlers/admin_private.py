@@ -8,8 +8,12 @@ from database.orm_query import orm_add_service, orm_get_services, orm_delete_ser
     orm_update_service, orm_add_barber, orm_update_barber
 
 from filters.chat_types import ChatTypeFilter, IsAdmin
-from keyboards.reply import admin_kb
+from keyboards.reply import admin_kb, main_menu_kb
 from keyboards.inline import get_callback_btns
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 admin_private_router = Router()
 admin_private_router.message.filter(ChatTypeFilter(["private"]), IsAdmin())
@@ -285,6 +289,16 @@ async def add_photo(message: types.Message, state: FSMContext, session: AsyncSes
     else:
         await state.update_data(photo=message.photo[-1].file_id)
     data = await state.get_data()
+
+    data['description'] = data.get('description', '')
+    # logging.debug(f'DESCRIPTION {data["description"]}')
+
+    data['photo'] = data.get('photo', '')
+    # logging.debug(f'PHOTO {data["photo"]}')
+
+    data['earnings'] = data.get('earnings', 0.0)
+    data['completed_jobs'] = data.get('completed_jobs', 0)
+
     try:
         if AddBarber.barber_for_change:
             await orm_update_barber(session, AddBarber.barber_for_change.id, data)
@@ -306,3 +320,8 @@ async def add_photo(message: types.Message, state: FSMContext, session: AsyncSes
 @admin_private_router.message(AddBarber.photo)
 async def add_photo_second(message: types.Message, state: FSMContext):
     await message.answer("Нет, отправьте фото барбера.")
+
+
+@admin_private_router.message(F.text == "⬅️ Назад")
+async def back_to_main_menu(message: types.Message):
+    await message.answer(text="Вы вернулись в главное меню.", reply_markup=main_menu_kb)

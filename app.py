@@ -4,7 +4,11 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
+import logging
+
 from dotenv import find_dotenv, load_dotenv
+
+from handlers.user_register import user_register_router
 
 load_dotenv(find_dotenv())
 
@@ -27,6 +31,7 @@ dp = Dispatcher()
 dp.include_router(user_private_router)
 dp.include_router(user_group_router)
 dp.include_router(admin_private_router)
+dp.include_router(user_register_router)
 
 
 async def on_startup(bot):
@@ -42,6 +47,8 @@ async def on_shutdown(bot):
 async def main():
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
+
+    logging.basicConfig(level=logging.INFO)
 
     dp.update.middleware(DataBaseSession(session_pool=sesstion_maker))
 

@@ -1,5 +1,5 @@
-from sqlalchemy import DateTime, String, Float, func, BigInteger, Numeric, Integer
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import DateTime, String, Float, func, BigInteger, Numeric, Integer, Text
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
@@ -22,34 +22,42 @@ class Barber(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(15), nullable=False)
+    description: Mapped[str] = mapped_column(String(100))
     photo: Mapped[str] = mapped_column(String(150))
     earnings: Mapped[float] = mapped_column(Numeric, default=0.0)
     completed_jobs: Mapped[int] = mapped_column(Integer, default=0)
 
 
+class User(Base):
+    __tablename__ = "user"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_name: Mapped[str] = mapped_column(String(30), nullable=True)
+    user_phone: Mapped[str] = mapped_column(String(12), nullable=True)
+    telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
+
+    # bookings: Mapped[list["Booking"]] = relationship("Service", back_populates="user")
+
+
+class Order(Base):
+    __tablename__ = "order"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    sum_order: Mapped[float] = mapped_column(Numeric)
+    order_service: Mapped[str] = mapped_column(Text)
+    user_telegram_id: Mapped[str] = mapped_column(BigInteger)
+    order_status: Mapped[int] = mapped_column(Integer)
 
 
 
 
-# class User(Base):
-#     __tablename__ = "user"
+# class Booking(Base):
+#     __tablename__ = 'booking'
+#     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+#     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('clients.id'), nullable=False)
+#     service: Mapped[str] = mapped_column(String, nullable=False)
+#     date: Mapped[str] = mapped_column(String, nullable=False)
+#     time: Mapped[str] = mapped_column(String, nullable=False)
 #
-#     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-#     user_id: Mapped[int] = mapped_column(BigInteger, unique=True)
-#     first_name: Mapped[str] = mapped_column(String(150), nullable=True)
-#     applications: Mapped[str] = mapped_column() ????
-#     phone: Mapped[str] = mapped_column(String(13), nullable=True)
-#
-#
-# class SubScription(Base):
-#     __tablename__ = "subscription"
-#
-#     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-#     title: Mapped[str] = mapped_column(String(150), nullable=False)
-#     description: Mapped[str] = mapped_column(String(150), nullable=False)
-#     price: Mapped[float] = mapped_column(Numeric(5, 2), nullable=False)
-#
-# class Application(Base):
-#     __tablename__ = "application"
-#
-#     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+#     user: Mapped["User"] = relationship("User", back_populates="booking")
+#     barber: Mapped["Barber"] = relationship("Barber", back_populates="barber")
