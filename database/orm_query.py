@@ -101,8 +101,22 @@ async def orm_add_user(session: AsyncSession, data: dict):
     except Exception as e:
         print(f'Ошибка {e}')
 
+
 async def orm_get_user(session: AsyncSession, telegram_id: int):
     result = await session.execute(select(User).where(User.telegram_id == telegram_id))
     return result.scalars().first()
 
+
 ########### ORDER ###########
+
+async def orm_add_order(session: AsyncSession, data: dict):
+    order = Order(
+        barber_id=data.get("barber_id", ""),
+        user_id=data.get("user_id", ""),
+        service_id=data.get("service_id", ""),
+        datetime=data.get("datatime", ""),
+        order_status=data.get("order_status", 0)
+    )
+
+    session.add(order)
+    await session.commit()
