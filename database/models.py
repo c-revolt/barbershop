@@ -43,11 +43,11 @@ class Order(Base):
     __tablename__ = "order"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    sum_order: Mapped[float] = mapped_column(Numeric)
-    order_service: Mapped[str] = mapped_column(Text)
-    user_telegram_id: Mapped[str] = mapped_column(BigInteger)
+    barber_id: Mapped[int] = mapped_column(Integer, ForeignKey('barber.id'), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id'), nullable=False)
+    service_id: Mapped[int] = mapped_column(Integer, ForeignKey('service.id'), nullable=False)
+    datetime: Mapped[DateTime] = mapped_column(DateTime, nullable=False)
     order_status: Mapped[int] = mapped_column(Integer)
-
 
 
 
